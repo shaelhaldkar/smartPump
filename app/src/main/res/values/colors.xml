@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#24437E</color>
+    <color name="colorPrimaryDark">#083B9B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="bg">#1a3d7f</color>
+    <color name="black">#000000</color>
+    <color name="button">#155083</color>
+    <color name="white">#FFFFFF</color>
+    <color name="dark_grey">#101010</color>
+    <color name="gray">#aaa</color>
+    <color name="button_stroke">#3b4f68</color>
+    <color name="grid_background">#243449</color>
+    <color name="background_light">#27394f</color>
+    <color name="background">#1c293b</color>
+    <color name="red">#FF0000</color>
+</resources>

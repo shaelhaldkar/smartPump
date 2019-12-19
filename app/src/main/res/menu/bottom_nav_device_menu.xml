@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <!--  <item
+        android:id="@+id/navigation_on_off"
+        android:icon="@drawable/ic_off"
+        android:title="@string/tag_on" />-->
+
+    <item
+        android:id="@+id/navigation_time"
+        android:icon="@drawable/ic_timer"
+        android:title="@string/nav_timer" />
+
+    <item
+        android:id="@+id/navigation_auto"
+        android:icon="@drawable/ic_auto_off"
+        android:title="@string/nav_auto" />
+
+</menu>
