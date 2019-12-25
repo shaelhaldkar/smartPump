@@ -33,7 +33,7 @@ class ParseJson {
 //        }
 //
         fun parseProfile(response: String?): ProfileModel {
-            val jsonData = JSONObject(response!!);
+            val jsonData = JSONObject(response!!).optJSONArray("data").getJSONObject(0);
             val gson = MainApplication.application?.gsonLib()
             return gson!!.fromJson(jsonData.toString(), ProfileModel::class.java)
         }

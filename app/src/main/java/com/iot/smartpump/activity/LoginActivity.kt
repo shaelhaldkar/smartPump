@@ -13,6 +13,7 @@ import com.iot.smartpump.webtask.WebMethods
 import com.trackingsystem.webServices.WebResponseListener
 import com.trackingsystem.webtask.ParseJson
 import kotlinx.android.synthetic.main.frg_login.*
+import org.json.JSONObject
 
 class LoginActivity : BaseActivity(), WebResponseListener {
     override fun onResponseReceived(error: String?, response: String, tag: String?) {
@@ -29,24 +30,54 @@ class LoginActivity : BaseActivity(), WebResponseListener {
                         showOtpDialog("", "")
                     }
                 } else if (tag.equals(Constants.WEB_ACTION_VERIFY_OTP)) {
-                    var profleModel = ParseJson.parseProfile(response)
-                    if (profleModel != null && !profleModel.passToken.isNullOrEmpty()) {
-                        profleModel.Mobile=ed_mobile.text.toString()
-                        MainApplication.instance!!.getPrefs().saveUserData(profleModel)
-                        startActivity(Intent(this@LoginActivity, RegisterActivity::class.java))
-                        finish()
+                    if (ParseJson.isSuccess(response)) {
+                        var token = JSONObject(response).optString("passToken")
+                        getUserProfile(token)
                     }
+                } else if (tag.equals(Constants.WEB_ACTION_GET_USER_DETAILS)) {
+                    if (ParseJson.isSuccess(response)) {
+                        var profleModel = ParseJson.parseProfile(response)
+//
+                        if (profleModel != null && !profleModel.passToken.isNullOrEmpty()) {
+                            profleModel.Mobile = ed_mobile.text.toString()
+                            MainApplication.instance!!.getPrefs().saveUserData(profleModel)
 
+                            if(profleModel.LastName.equals("User",true)) {
+                                var intent=Intent(this@LoginActivity, RegisterActivity::class.java)
+                                intent.putExtra("data",profleModel)
+                                startActivity(intent)
+                            }else{
+                                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                            }
+                            finish()
+                        }
+                    }
                 }
             }
         }
     }
 
+    private fun getUserProfile(token: String) {
+//        var profleModel = ParseJson.parseProfile(response)
+//
+//        if (profleModel != null && !profleModel.passToken.isNullOrEmpty()) {
+//            profleModel.Mobile=ed_mobile.text.toString()
+//            MainApplication.instance!!.getPrefs().saveUserData(profleModel)
+//            startActivity(Intent(this@LoginActivity, RegisterActivity::class.java))
+//            finish()
+//        }
+        runOnUiThread {
+            showProgressDialog()
+            WebMethods().getUserDetail(this, token, Constants.WEB_ACTION_GET_USER_DETAILS, this)
+        }
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.frg_login)
-        if(!MainApplication.instance!!.getPrefs().getToken().toString().isEmpty()){
-            startActivity(Intent(this@LoginActivity,MainActivity::class.java))
+        if (!MainApplication.instance!!.getPrefs().getToken().toString().isEmpty()) {
+            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
             finish()
         }
         btn_get_otp.setOnClickListener {

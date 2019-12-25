@@ -18,6 +18,7 @@ public interface Constants {
     String WEB_ACTION_DELETE_DEVICE = "removeDevice/";
     String WEB_ACTION_UPDATE_DEVICE_NAME = "updateDeviceName/";
     String WEB_ACTION_INSERT_DEVICE = "insertDevice/";
+    String WEB_ACTION_GET_USER_DETAILS = "getUserDetailsByUserId/";
     String WEB_ACTION_UPDATE_IMAGE = "updateImageByDno/";
 
     //    String WEB_ACTION_TEMP_POST_DEVICE_SETTING="http://192.99.45.76:80/Service1.svc/Settings";//"http://192.99.45.76:80/Service1.svc/set?val=1";//http://192.99.45.76:80/Service1.svc/Settings";

@@ -74,7 +74,11 @@ public class WebMethods {
         String url = Constants.URL_BASE + Constants.WEB_ACTION_GET_DEVICE_LIST + MainApplication.Companion.getInstance().getPrefs().getToken();
         MainApplication.Companion.getInstance().okHttpRequestCallHandler.getResponseFromJson(mContext, url, action, WebResponseListener);
     }
-    public void insertDevice(Context mContext, String action, String DeviceNo,  String deviceName, String ULimit, String LLimit, int CkLimit, WebResponseListener WebResponseListener) {
+    public void getUserDetail(Context mContext,String UserToaken, String action, WebResponseListener WebResponseListener) {
+        String url = Constants.URL_BASE + Constants.WEB_ACTION_GET_USER_DETAILS + UserToaken;
+        MainApplication.Companion.getInstance().okHttpRequestCallHandler.getResponseFromJson(mContext, url, action, WebResponseListener);
+    }
+    public void insertDevice(Context mContext, String action, String DeviceNo,  String deviceName, WebResponseListener WebResponseListener) {
         String url = Constants.URL_BASE + action + MainApplication.Companion.getInstance().getPrefs().getToken();
 
         try {
@@ -82,11 +86,26 @@ public class WebMethods {
             jsonObject.put("DeviceNo", DeviceNo);// Math.round(Math.random() * 1025));
             jsonObject.put("DeviceName", deviceName);
             jsonObject.put("TypeID", 1);
-            jsonObject.put("ULimit", ULimit);
-            jsonObject.put("LLimit", LLimit);
-            jsonObject.put("CkLimit", CkLimit);
+//            jsonObject.put("ULimit", ULimit);
+//            jsonObject.put("LLimit", LLimit);
+//            jsonObject.put("CkLimit", CkLimit);
             jsonObject.put("TypeID", 1);
             MainApplication.Companion.getInstance().okHttpRequestCallHandler.getResponseFromJsonPost(mContext, url, Constants.WEB_ACTION_INSERT_DEVICE, jsonObject.toString(), WebResponseListener);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    public void updateDevice(Context mContext, String action, String DeviceNo,  String deviceName, WebResponseListener WebResponseListener) {
+        String url = Constants.URL_BASE + action + MainApplication.Companion.getInstance().getPrefs().getToken();
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("DeviceNo", DeviceNo);// Math.round(Math.random() * 1025));
+            jsonObject.put("DeviceName", deviceName);
+//            jsonObject.put("ULimit", ULimit);
+//            jsonObject.put("LLimit", LLimit);
+//            jsonObject.put("CkLimit", CkLimit);
+            MainApplication.Companion.getInstance().okHttpRequestCallHandler.getResponseFromJsonPost(mContext, url, action, jsonObject.toString(), WebResponseListener);
         } catch (JSONException e) {
             e.printStackTrace();
         }

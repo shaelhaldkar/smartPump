@@ -22,12 +22,17 @@ class RegisterActivity : BaseActivity(), WebResponseListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fragment_register)
-        etFirstname.setText(MainApplication.instance!!.getPrefs().getUserFName())
-        etMobileNumber.setText(MainApplication.instance!!.getPrefs().getUserPhone())
+
         btnRegister!!.setOnClickListener {
             validateData()
 
         }
+        getUserDetails()
+    }
+
+    private fun getUserDetails() {
+        showProgressDialog()
+        WebMethods().getUserDetail(this, MainApplication.instance!!.getPrefs().getToken(), Constants.WEB_ACTION_GET_USER_DETAILS, this)
     }
 
     private fun validateData() {
@@ -81,18 +86,37 @@ class RegisterActivity : BaseActivity(), WebResponseListener {
         runOnUiThread {
             hideProgress()
         }
-        if (error == null) {
+        if (error == null ) {
             if (tag.equals(Constants.WEB_ACTION_UPDATE_USER)) {
-                profileModel.passToken=MainApplication.instance!!.getPrefs().getToken().toString()
+                profileModel.passToken = MainApplication.instance!!.getPrefs().getToken().toString()
                 if (ParseJson.isSuccess(response)) MainApplication.instance!!.getPrefs().saveUserData(profileModel)
                 runOnUiThread {
                     showToast("Profile Updated Successfully ")
                     startActivity(Intent(this@RegisterActivity, MainActivity::class.java))
                     finish()
                 }
+            } else if (tag.equals(Constants.WEB_ACTION_GET_USER_DETAILS)) {
+                if (ParseJson.isSuccess(response)) {
+                    profileModel = ParseJson.parseProfile(response)
+//
+                    if (profileModel != null && !profileModel.passToken.isNullOrEmpty()) {
+                        MainApplication.instance!!.getPrefs().saveUserData(profileModel)
+                        runOnUiThread {
+                            setDataOnView(profileModel)
+                        }
+                    }
+                }
             }
         } else {
             showToast(error)
         }
+    }
+
+    private fun setDataOnView(profileModel: ProfileModel) {
+        etFirstname.setText(profileModel.FirstName)
+        etLastName.setText(profileModel.LastName)
+        etMobileNumber.setText(profileModel.Mobile)
+        etEmail.setText(profileModel.Email)
+        etAddress.setText(profileModel.Address)
     }
 }

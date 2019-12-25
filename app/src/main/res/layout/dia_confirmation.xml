@@ -16,6 +16,7 @@
        android:id="@+id/tv_confirmation_msg"/>
 
 <LinearLayout
+    android:visibility="gone"
     android:gravity="right"
     android:layout_marginRight="10dp"
     android:orientation="horizontal"

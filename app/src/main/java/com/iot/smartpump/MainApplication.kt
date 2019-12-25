@@ -48,7 +48,12 @@ class MainApplication : Application() {
             application = this
 
 
-            mOkHttpClient = OkHttpClient().newBuilder().connectTimeout(100, TimeUnit.MINUTES).build() // connect timeout
+          var   OkHttpClient = OkHttpClient().newBuilder()//
+        OkHttpClient.connectTimeout(15, TimeUnit.SECONDS); // connect timeout
+        OkHttpClient.readTimeout(15, TimeUnit.SECONDS);
+        mOkHttpClient=OkHttpClient.build()
+
+        // connect timeout
             //            OkHttpClient client = new OkHttpClient()
         okHttpRequestCallHandler=OkHttpRequestCallHandler()
 

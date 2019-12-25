@@ -78,131 +78,6 @@
                 android:textColor="@android:color/white" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:baselineAligned="false">
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight=".7"
-                android:theme="@style/TextInputLayoutAppearance">
-
-                <EditText
-                    android:id="@+id/ed_ulimit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/ULimit"
-                    android:inputType="number"
-                    android:textColor="@android:color/white" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <TextView
-                android:gravity="center"
-                style="@style/tv_medium_text"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="(in cm)" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight=".7"
-                android:theme="@style/TextInputLayoutAppearance">
-
-                <EditText
-                    android:id="@+id/ed_llimit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/LLimit"
-                    android:inputType="number"
-                    android:textColor="@android:color/white" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <TextView
-                android:gravity="center"
-                style="@style/tv_medium_text"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="(in cm)" />
-        </LinearLayout>
-
-
-        <LinearLayout
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/grid_background"
-            android:orientation="vertical"
-            tools:visibility="visible">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:baselineAligned="false">
-
-                <!--                        <LinearLayout-->
-                <!--                                android:layout_width="0dp"-->
-                <!--                                android:layout_height="match_parent"-->
-                <!--                                android:layout_weight="1"-->
-                <!--                                android:orientation="vertical">-->
-
-                <!--                            <TextView-->
-                <!--                                    style="@style/HintText"-->
-                <!--                                    android:layout_width="match_parent"-->
-                <!--                                    android:layout_height="wrap_content"-->
-                <!--                                    android:gravity="left"-->
-
-                <!--                                    android:text="License State" />-->
-
-                <!--                            <Spinner-->
-
-                <!--                                    android:id="@+id/sp_licence_state"-->
-                <!--                                    android:layout_width="match_parent"-->
-                <!--                                    android:layout_height="match_parent"-->
-                <!--                                    android:layout_gravity="center_vertical"-->
-                <!--                                    android:gravity="center_vertical"-->
-                <!--                                    android:prompt="@string/spinner_lic_title" />-->
-                <!--                        </LinearLayout>-->
-
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:baselineAligned="false">
-
-                <TextView
-                    style="@style/tv_medium_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="Auto Mode : " />
-
-                <CheckBox
-                    android:id="@+id/chbx_ck"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".5"
-                    android:theme="@style/TextInputLayoutAppearance" />
-
-            </LinearLayout>
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -211,6 +86,7 @@
             android:orientation="horizontal">
 
             <Button
+
                 android:id="@+id/btn_save"
                 style="@style/button_selectable"
                 android:layout_width="wrap_content"
@@ -220,7 +96,7 @@
                 android:layout_marginBottom="@dimen/dimen_10"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
-                android:text="@string/register"
+                android:text="Add Device"
                 android:textAllCaps="true" />
 
 

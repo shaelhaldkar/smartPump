@@ -39,9 +39,9 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         var fragment: Fragment? = null
         when (menuItem.itemId) {
             R.id.nav_home -> fragment = HomeFragment()
-            R.id.navigation_dashboard -> fragment = DashboardFragment()
+//            R.id.navigation_dashboard -> fragment = DashboardFragment()
             R.id.nav_profile -> fragment = UpdateProfileFragment()
-            R.id.nav_logout -> showLogOutDialog()
+//            R.id.nav_logout -> showLogOutDialog()
         }
         if (fragment != null) {
             changeFragment(fragment!!)
@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             dialog.dismiss()
             MainApplication.instance!!.getPrefs().clearLocalData()
             startActivity(Intent(this@MainActivity, LoginActivity::class.java))
-            onBackPressed();
+          finish()
         }
 
         val alertDialog = builder.create()

@@ -7,6 +7,7 @@ import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.iot.smartpump.MainApplication
 import com.iot.smartpump.R
 import com.iot.smartpump.model.ProfileModel
 import com.iot.smartpump.utils.Constants
@@ -27,10 +28,14 @@ class UpdateProfileFragment : BaseFragment(), WebResponseListener {
         super.onViewCreated(view, savedInstanceState)
         btnRegister!!.setOnClickListener {
             validateData()
-
         }
+        getUserDetails()
     }
 
+    private fun getUserDetails() {
+        showProgressDialog()
+        WebMethods().getUserDetail(activity!!, MainApplication.instance!!.getPrefs().getToken(), Constants.WEB_ACTION_GET_USER_DETAILS, this)
+    }
 
     private fun validateData() {
         val firstName = etFirstname!!.text.toString()
@@ -81,13 +86,32 @@ class UpdateProfileFragment : BaseFragment(), WebResponseListener {
         Log.i("tag : ", tag)
         Log.i("tag : ", response)
         Log.i("error : ", "" + error)
+        activity!!.runOnUiThread {
+            hideProgress()
+        }
 
-        hideProgress()
         if (error == null) {
+
             if (tag.equals(Constants.WEB_ACTION_UPDATE_USER)) {
-                var profleModel = ParseJson.parseProfile(response)
-                showToast("Profile Updated Successfully ")
-                changeInnerFragment(HomeFragment(),R.id.nav_host_fragment)
+                if (ParseJson.isSuccess(response)) {
+                    activity!!.runOnUiThread {
+                        showToast("Profile Updated Successfully ")
+                        changeInnerFragment(HomeFragment(), R.id.nav_host_fragment)
+                    }
+
+                }
+
+            } else if (tag.equals(Constants.WEB_ACTION_GET_USER_DETAILS)) {
+                if (ParseJson.isSuccess(response)) {
+                    var profleModel = ParseJson.parseProfile(response)
+//
+                    if (profleModel != null && !profleModel.passToken.isNullOrEmpty()) {
+                        MainApplication.instance!!.getPrefs().saveUserData(profleModel)
+                        activity!!.runOnUiThread {
+                            setDataOnView(profleModel)
+                        }
+                    }
+                }
             }
         } else {
             showToast(error)
@@ -95,6 +119,13 @@ class UpdateProfileFragment : BaseFragment(), WebResponseListener {
 
     }
 
+    private fun setDataOnView(profileModel: ProfileModel) {
+        etFirstname.setText(profileModel.FirstName)
+        etLastName.setText(profileModel.LastName)
+        etMobileNumber.setText(profileModel.Mobile)
+        etEmail.setText(profileModel.Email)
+        etAddress.setText(profileModel.Address)
+    }
 
     //    @Override
     //    public void onResponseReceived(final String error, final String response, final String tag) {

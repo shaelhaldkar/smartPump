@@ -13,5 +13,6 @@
     <color name="grid_background">#243449</color>
     <color name="background_light">#27394f</color>
     <color name="background">#1c293b</color>
+    <color name="tansparent_black">#99000000</color>
     <color name="red">#FF0000</color>
 </resources>

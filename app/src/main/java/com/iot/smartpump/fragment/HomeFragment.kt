@@ -27,7 +27,7 @@ import org.json.JSONObject
 
 class HomeFragment : BaseFragment(), WebResponseListener {
     override fun onResponseReceived(error: String?, response: String, tag: String?) {
-        Log.i("tag : ",""+ tag)
+        Log.i("tag : ", "" + tag)
         Log.i("response : ", response)
         Log.i("error : ", "" + error)
 
@@ -71,7 +71,7 @@ class HomeFragment : BaseFragment(), WebResponseListener {
         getDevicelist()
         recyclerView.addOnItemTouchListener(RecyclerItemClickListener(activity!!, object : RecyclerItemClickListener.OnItemClickListener {
             override fun onItemLongPress(childView: View?, position: Int) {
-
+                showDeletDeviceConfirmDialog(adapter!!.list.get(position))
 
             }
 
@@ -81,7 +81,7 @@ class HomeFragment : BaseFragment(), WebResponseListener {
 //                } else if (childView!!.id == R.id.img_update) {
 //                    showAddDeviceDialog(adapter.list.get(position), Constants.WEB_ACTION_UPDATE_DEVICE_NAME)
 //                } else
-                    if (childView!!.id == R.id.img_device) {
+                if (childView!!.id == R.id.img_device) {
                     var deviceData = adapter.list.get(position)
                     var data = JSONObject()
 
@@ -114,9 +114,9 @@ class HomeFragment : BaseFragment(), WebResponseListener {
         val dialogLayout = layoutInflater.inflate(R.layout.dia_devices_registration, null)
         var ed_DeviceNo = dialogLayout.findViewById<EditText>(R.id.ed_DeviceNo)
         var ed_device_name = dialogLayout.findViewById<EditText>(R.id.ed_device_name)
-        var ed_llimit = dialogLayout.findViewById<EditText>(R.id.ed_llimit)
-        var ed_ulimit = dialogLayout.findViewById<EditText>(R.id.ed_ulimit)
-        var ck_limit = dialogLayout.findViewById<CheckBox>(R.id.chbx_ck)
+//        var ed_llimit = dialogLayout.findViewById<EditText>(R.id.ed_llimit)
+//        var ed_ulimit = dialogLayout.findViewById<EditText>(R.id.ed_ulimit)
+//        var ck_limit = dialogLayout.findViewById<CheckBox>(R.id.chbx_ck)
         var alertTitle = dialogLayout.findViewById<TextView>(R.id.alertTitle)
         var btn_save = dialogLayout.findViewById<Button>(R.id.btn_save)
         var img_cancel = dialogLayout.findViewById<ImageView>(R.id.img_cancel)
@@ -126,7 +126,7 @@ class HomeFragment : BaseFragment(), WebResponseListener {
             ed_DeviceNo.isEnabled = false
             ed_DeviceNo.setText("" + model!!.DeviceNo)
             ed_device_name.setText("" + model!!.DeviceName)
-            ed_llimit.setText("" + model.LLimit)
+//            ed_llimit.setText("" + model.LLimit)
 
         }
         builder.setView(dialogLayout)
@@ -137,20 +137,25 @@ class HomeFragment : BaseFragment(), WebResponseListener {
 //             }
         btn_save.setOnClickListener {
             alertDialog.dismiss()
-            var ss = 1
-            if (ck_limit.isChecked) {
-                ss = 1
-            } else {
-                ss = 0
-            }
+//            var ss = 1
+//            if (ck_limit.isChecked) {
+//                ss = 1
+//            } else {
+//                ss = 0
+//            }
             showProgressDialog()
-            WebMethods().insertDevice(activity!!, Constants.WEB_ACTION_INSERT_DEVICE, ed_DeviceNo.text.toString(),  ed_device_name.text.toString(), ed_ulimit.text.toString(), ed_llimit.text.toString(), ss, this)
+            WebMethods().insertDevice(activity!!, Constants.WEB_ACTION_INSERT_DEVICE, ed_DeviceNo.text.toString(), ed_device_name.text.toString(), this)
 
         }
         img_cancel.setOnClickListener {
             alertDialog.dismiss()
 
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getDevicelist()
     }
 
     private fun showDeletDeviceConfirmDialog(model: DeviceData) {
