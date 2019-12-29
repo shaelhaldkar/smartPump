@@ -9,6 +9,7 @@
     <color name="white">#FFFFFF</color>
     <color name="dark_grey">#101010</color>
     <color name="gray">#aaa</color>
+    <color name="gray_black">#494848</color>
     <color name="button_stroke">#3b4f68</color>
     <color name="grid_background">#243449</color>
     <color name="background_light">#27394f</color>

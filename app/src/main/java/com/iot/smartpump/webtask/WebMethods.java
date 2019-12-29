@@ -47,7 +47,8 @@ public class WebMethods {
             String jsonString = gson.toJson(profileModel);
 
             JSONObject dataJson = new JSONObject(jsonString);
-
+            dataJson.put("ID",null);
+            dataJson.put("passToken",null);
             String url = Constants.URL_BASE + action +MainApplication.Companion.getInstance().getPrefs().getToken();
 
             MainApplication.Companion.getInstance().okHttpRequestCallHandler.getResponseFromJsonPost(mContext, url, action, dataJson.toString(), WebResponseListener);

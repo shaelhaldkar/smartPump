@@ -20,6 +20,7 @@ public interface Constants {
     String WEB_ACTION_INSERT_DEVICE = "insertDevice/";
     String WEB_ACTION_GET_USER_DETAILS = "getUserDetailsByUserId/";
     String WEB_ACTION_UPDATE_IMAGE = "updateImageByDno/";
+    long WAIT_TIME_FOR_RESPONSE=1000*5;
 
     //    String WEB_ACTION_TEMP_POST_DEVICE_SETTING="http://192.99.45.76:80/Service1.svc/Settings";//"http://192.99.45.76:80/Service1.svc/set?val=1";//http://192.99.45.76:80/Service1.svc/Settings";
     String BASE_URL_TEMP = "http://192.168.1.1/";//"http://192.99.45.76:80/Service1.svc/set?val=1";//http://192.99.45.76:80/Service1.svc/Settings";

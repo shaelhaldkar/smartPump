@@ -5,19 +5,20 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.iot.smartpump.utils.MQTTRequestListnerListner;
+import com.iot.smartpump.utils.MQTTSubscribeListner;
+
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.io.UnsupportedEncodingException;
-
-/**
- * Created by brijesh on 20/4/17.
- */
 
 public class PahoMqttClient {
 
@@ -33,14 +34,41 @@ public class PahoMqttClient {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     mqttAndroidClient.setBufferOpts(getDisconnectedBufferOptions());
-//                    Log.d(TAG, "Success");
+                    Log.d(TAG, "Success");
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-//                    Log.d(TAG, "Failure " + exception.toString());
+                    Log.d(TAG, "Failure " + exception.toString());
                 }
             });
+
+//            mqttAndroidClient.setCallback(new MqttCallbackExtended(){
+//                @Override
+//                public void connectComplete(boolean b, String s) {
+//                    Log.d(TAG, "connectComplete Successfully " + s);
+//
+//                }
+//
+//                @Override
+//                public void connectionLost(Throwable throwable) {
+//                    Log.d(TAG, "connectComplete throw " + throwable);
+//                }
+//
+//                @Override
+//                public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
+//                    Log.d(TAG, "message Arived"  );
+//                    Log.d(TAG, "String s"+ s  );
+//                    Log.d(TAG, "MqttMessage mqttMessage"+ mqttMessage  );
+//
+////                setMessageNotification(s, new String(mqttMessage.getPayload()));
+//                }
+//
+//                @Override
+//                public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
+//                    Log.d(TAG, "connectComplete delivered");
+//                }
+//            });
         } catch (MqttException e) {
             e.printStackTrace();
         }
@@ -85,28 +113,30 @@ public class PahoMqttClient {
     }
 
 
-    public void publishMessage(@NonNull MqttAndroidClient client, @NonNull String msg, int qos, @NonNull String topic)
+    public void publishMessage(@NonNull MqttAndroidClient client, @NonNull String msg, int qos, @NonNull String topic, MQTTRequestListnerListner mqttRequestListner)
             throws MqttException, UnsupportedEncodingException {
         byte[] encodedPayload = new byte[0];
         encodedPayload = msg.getBytes("UTF-8");
         MqttMessage message = new MqttMessage(encodedPayload);
         message.setId(320);
         message.setRetained(false);
-
         message.setQos(qos);
         client.publish(topic, message);
+        client.setCallback(new MqttCallbackHandler(mqttRequestListner));
     }
 
-    public void subscribe(@NonNull MqttAndroidClient client, @NonNull final String topic, int qos) throws MqttException {
+    public void subscribe(@NonNull MqttAndroidClient client, @NonNull final String topic, int qos, final MQTTSubscribeListner listner) throws MqttException {
         IMqttToken token = client.subscribe(topic, qos);
         token.setActionCallback(new IMqttActionListener() {
             @Override
             public void onSuccess(IMqttToken iMqttToken) {
                 Log.d(TAG, "Subscribe Successfully " + topic);
+                listner.onSubscribe(true,iMqttToken);
             }
 
             @Override
             public void onFailure(IMqttToken iMqttToken, Throwable throwable) {
+                listner.onSubscribe(false,iMqttToken);
                 Log.e(TAG, "Subscribe Failed " + topic);
 
             }

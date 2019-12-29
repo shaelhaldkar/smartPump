@@ -17,6 +17,8 @@ import com.iot.smartpump.database.AppPrefs
 import com.iot.smartpump.mqttrequest.MqttMessageService
 import com.iot.smartpump.mqttrequest.PahoMqttClient
 import com.iot.smartpump.utils.Constants
+import com.iot.smartpump.utils.MQTTRequestListnerListner
+import com.iot.smartpump.utils.MQTTSubscribeListner
 import com.iot.smartpump.utils.NetworkChangeReceiver
 import com.iot.smartpump.webtask.OkHttpRequestCallHandler
 import com.trackingsystem.webServices.VolleyRequestKotlin
@@ -75,16 +77,15 @@ class MainApplication : Application() {
 
     }
 
-    fun subscribeToMQTT(topic: String) {
+    fun subscribeToMQTT(topic: String,subcribeListner: MQTTSubscribeListner) {
         try {
-            pahoMqttClient!!.subscribe(client!!, topic, 0)
+            pahoMqttClient!!.subscribe(client!!, topic, 0,subcribeListner)
         } catch (e: MqttException) {
             e.printStackTrace()
         }
-
     }
 
-    fun sendMQTTMessgae(msg: String,deviceId:String) {
+    fun sendMQTTMessgae(msg: String,deviceId:String,mqttRequestListner: MQTTRequestListnerListner) {
         Log.e("Mqtt Message ", "" + msg)
         Log.e("deviceId" , "" + deviceId)
         Log.e("request url" , "" + Constants.PUBLISH_TOPIC+deviceId)
@@ -92,7 +93,9 @@ class MainApplication : Application() {
             try {
 
                 Log.e("Mqtt connect ", "" + client!!.isConnected)
-                pahoMqttClient!!.publishMessage(client!!, msg, 0, Constants.PUBLISH_TOPIC+deviceId)
+                pahoMqttClient!!.publishMessage(client!!, msg, 0, Constants.PUBLISH_TOPIC+deviceId,mqttRequestListner)
+
+
             } catch (e: MqttException) {
                 e.printStackTrace()
             } catch (e: UnsupportedEncodingException) {

@@ -84,7 +84,7 @@ class UpdateProfileFragment : BaseFragment(), WebResponseListener {
 
     override fun onResponseReceived(error: String?, response: String, tag: String?) {
         Log.i("tag : ", tag)
-        Log.i("tag : ", response)
+        Log.i("response : ", response)
         Log.i("error : ", "" + error)
         activity!!.runOnUiThread {
             hideProgress()

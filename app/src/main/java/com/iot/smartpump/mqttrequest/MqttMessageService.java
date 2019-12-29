@@ -43,6 +43,10 @@ public class MqttMessageService extends Service {
 
             @Override
             public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
+                Log.d(TAG, "message Arived"  );
+                Log.d(TAG, "String s"+ s  );
+                Log.d(TAG, "MqttMessage mqttMessage"+ mqttMessage  );
+
 //                setMessageNotification(s, new String(mqttMessage.getPayload()));
             }
 

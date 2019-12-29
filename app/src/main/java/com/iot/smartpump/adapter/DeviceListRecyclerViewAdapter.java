@@ -43,7 +43,7 @@ public class DeviceListRecyclerViewAdapter extends RecyclerView.Adapter<DeviceLi
         DeviceData model = mValues.get(position);
         holder.mTvDeviceName.setText(model.getDeviceName());
         holder.tv_device_no.setText(model.getDeviceNo());
-//        if (model.isOn()==1){
+//        if (model.state()==1){
 //            holder.mImgDevice.setColorFilter(ContextCompat.getColor(mContext,R.color.bg));
 //            holder.tv_device_status.setText("On");
 //        }else{

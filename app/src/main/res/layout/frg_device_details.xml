@@ -6,7 +6,7 @@
     android:background="@drawable/gradient_bg"
     android:orientation="vertical">
 
-<include layout="@layout/header_device"/>
+    <include layout="@layout/header_device" />
 
     <ImageButton
         android:id="@+id/imgbtn_on_off"

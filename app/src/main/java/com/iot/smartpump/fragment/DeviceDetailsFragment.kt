@@ -14,16 +14,81 @@ import kotlinx.android.synthetic.main.frg_device_details.*
 import kotlinx.android.synthetic.main.header_device.*
 import org.json.JSONObject
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.iot.smartpump.utils.MQTTRequestListnerListner
+import com.iot.smartpump.utils.MQTTSubscribeListner
 import com.iot.smartpump.webtask.WebMethods
 import com.trackingsystem.webServices.WebResponseListener
+import org.eclipse.paho.client.mqttv3.IMqttToken
+import org.eclipse.paho.client.mqttv3.MqttMessage
 
 
-class DeviceDetailsFragment : BaseFragment(), BottomNavigationView.OnNavigationItemSelectedListener, WebResponseListener {
+class DeviceDetailsFragment : BaseFragment(), BottomNavigationView.OnNavigationItemSelectedListener, WebResponseListener, MQTTSubscribeListner, MQTTRequestListnerListner {
+    private lateinit var menuItem_timer: MenuItem
+    private lateinit var menuItem_auto: MenuItem
+    var TAG = javaClass.name
+    var action = ""
+    var CONSTT_SYNC = "sync"
+    @ExperimentalStdlibApi
+    override fun onMessageArrived(s: String?, mqttMessage: MqttMessage?) {
+        Log.d(TAG, "frg message Arived")
+        Log.d(TAG, "frg String $s")
+//        Log.d(TAG, "frg payload ${mqttMessage!!.payload.decodeToString()}")
+//        Log.d(TAG, "frg MqttMessage mqttMessage${mqttMessage.toString()}")
+        hideProgress()
+        if (!s!!.isNullOrEmpty() && mqttMessage != null ) {
+
+            //{"state":0,"CkLimit":1,"limitOn":10,"limitOff":12}
+            if( JSONObject(s).has(CONSTT_SYNC)) {
+                var jsonData = JSONObject(mqttMessage.toString())
+                deviceData.CkLimit = jsonData.optInt("CkLimit")
+                deviceData.LLimit = jsonData.optInt("limitOn")
+                deviceData.ULimit = jsonData.optInt("limitOff")
+                deviceData.state = jsonData.optInt("state")
+                if (deviceData.state == 1) {
+                    imgbtn_on_off.setImageResource(R.mipmap.off)
+                } else {
+                    imgbtn_on_off.setImageResource(R.mipmap.on)
+                }
+                if(deviceData.CkLimit==1){
+                    menuItem_auto.setChecked(true)
+                    doEnableDisableOnOffBtn(false)
+                }else{
+                    doEnableDisableOnOffBtn(true)
+                }
+            }else{
+                showErrorDialog()
+            }
+        } else {
+            if( JSONObject(s).has(CONSTT_SYNC)) {
+                showErrorDialog()
+            }
+        }
+
+    }
+
+    private fun showErrorDialog() {
+        val dialog = AlertDialog.Builder(activity!!)
+        val dialogLayout = layoutInflater.inflate(R.layout.dia_device_offline, null)
+        dialogLayout.setOnClickListener {
+            activity!!.onBackPressed()
+        }
+        dialog.setView(dialogLayout)
+        var alert = dialog.show()
+    }
+
+    override fun onSubscribe(isScuess: Boolean, iMqttToken: IMqttToken?) {
+        if (isScuess) {
+
+            var jsonData = JSONObject()
+            jsonData.put("sync", "/SNS/pump_" + MainApplication.instance!!.getPrefs().getUserId())
+            checkDeviceState(deviceData!!, jsonData)
+        } else {
+            hideProgress()
+        }
+    }
 
     private var updatedDdevice_name = ""
 
-    private var isAuto = 0
     override fun onResponseReceived(error: String?, response: String, tag: String?) {
         Log.i("tag : ", tag)
         Log.i("response : ", response)
@@ -44,7 +109,7 @@ class DeviceDetailsFragment : BaseFragment(), BottomNavigationView.OnNavigationI
 
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {
         when (p0.getItemId()) {
-            R.id.navigation_auto -> if (isAuto == 0) {
+            R.id.navigation_auto -> if (deviceData.CkLimit == 0) {
                 processAutoOn()
             } else {
                 showConfirmationDialog()
@@ -72,7 +137,7 @@ class DeviceDetailsFragment : BaseFragment(), BottomNavigationView.OnNavigationI
         dialog.setView(dialogLayout)
         dialog.setPositiveButton("Yes", object : DialogInterface.OnClickListener {
             override fun onClick(p0: DialogInterface?, p1: Int) {
-                doAutoOff(1)
+                doAutoOff()
                 doEnableDisableOnOffBtn(true)
                 p0!!.dismiss()
             }
@@ -96,15 +161,17 @@ class DeviceDetailsFragment : BaseFragment(), BottomNavigationView.OnNavigationI
         var ed_ulimit = dialogLayout.findViewById<EditText>(R.id.ed_ulimit)
         var ed_llimit = dialogLayout.findViewById<EditText>(R.id.ed_llimit)
         var btn_save = dialogLayout.findViewById<Button>(R.id.btn_save)
-        ed_ulimit.setText(""+deviceData.ULimit)
-        ed_llimit.setText(""+deviceData.LLimit)
+        ed_ulimit.setText("" + deviceData.ULimit)
+        ed_llimit.setText("" + deviceData.LLimit)
+        ed_ulimit.setSelection(ed_ulimit.text.length)
+        ed_llimit.setSelection(ed_llimit.text.length)
         dialog.setView(dialogLayout)
         var alertDialog = dialog.show()
         btn_save.setOnClickListener {
             if (ed_llimit.text.isEmpty()) {
-
+                ed_llimit.setError("Please Enter Lower Limit")
             } else if (ed_ulimit.text.toString().isEmpty()) {
-
+                ed_llimit.setError("Please Enter Upper Limit")
             } else if (!isValidLimit(ed_llimit.text.toString(), ed_ulimit.text.toString())) {
                 ed_ulimit.error = "Upper Limit should be greater than Lower Limit"
             } else {
@@ -126,15 +193,21 @@ class DeviceDetailsFragment : BaseFragment(), BottomNavigationView.OnNavigationI
         var data = JSONObject()
         data.put("limitOn", lllimt.toInt())
         data.put("limitOff", ulimit.toInt())
-        MainApplication.instance!!.sendMQTTMessgae(data.toString(), deviceData.DeviceNo)
-        doAutoOff(1)
+        MainApplication.instance!!.sendMQTTMessgae(data.toString(), deviceData.DeviceNo, this)
+        doAutoOff()
     }
 
-    private fun doAutoOff(i: Int) {
+    private fun doAutoOff() {
+
         var data1 = JSONObject()
-        data1.put("CkLimit", i)
-        MainApplication.instance!!.sendMQTTMessgae(data1.toString(), deviceData.DeviceNo)
-        isAuto = if (isAuto == 1) 0 else 1
+       if( deviceData.CkLimit==0){
+           deviceData.CkLimit=1
+       }else{
+           deviceData.CkLimit=0
+       }
+        data1.put("CkLimit", deviceData.CkLimit)
+        MainApplication.instance!!.sendMQTTMessgae(data1.toString(), deviceData.DeviceNo, this)
+
 
     }
 
@@ -177,6 +250,29 @@ class DeviceDetailsFragment : BaseFragment(), BottomNavigationView.OnNavigationI
         }
         val navigation = activity!!.findViewById(R.id.nav_view) as BottomNavigationView
         navigation.setOnNavigationItemSelectedListener(this)
+       var menu= navigation.menu
+         menuItem_auto=menu.findItem(R.id.navigation_auto)
+         menuItem_timer=menu.findItem(R.id.navigation_time)
+        menuItem_timer.setChecked(false)
+
+        checkDeiceStatus(deviceData)
+
+
+    }
+
+    private fun checkDeiceStatus(deviceData: DeviceData?) {
+        subcribeToChannel()
+
+
+    }
+
+    private fun subcribeToChannel() {
+        showProgressDialog()
+        MainApplication.instance!!.subscribeToMQTT("/SNS/pump_" + MainApplication.instance!!.getPrefs().getUserId(), this@DeviceDetailsFragment)
+    }
+
+    fun checkDeviceState(deviceData: DeviceData, jsonData: JSONObject) {
+        MainApplication.instance!!.sendMQTTMessgae(jsonData.toString(), deviceData.DeviceNo, this@DeviceDetailsFragment)
     }
 
     private fun showAddDeviceDialog(model: DeviceData?, action: String) {
@@ -225,33 +321,33 @@ class DeviceDetailsFragment : BaseFragment(), BottomNavigationView.OnNavigationI
     }
 
     private fun doOnOff() {
-        if (imgbtn_on_off.tag.toString().equals(getString(R.string.tag_on), true)) {
+        if (deviceData.state == 1) {
             imgbtn_on_off.setImageResource(R.mipmap.off)
-            imgbtn_on_off.setTag(getString(R.string.tag_off))
-            deviceData.isOn = 0
+            deviceData.state = 0
         } else {
             imgbtn_on_off.setImageResource(R.mipmap.on)
-            imgbtn_on_off.setTag(getString(R.string.tag_on))
-            deviceData.isOn = 1
+            deviceData.state = 1
         }
         var data = JSONObject()
-        data.put(Constants.MQTT_METHOD_STATUS, deviceData.isOn)
+        data.put(Constants.MQTT_METHOD_STATUS, deviceData.state)
         sendDataOnOff(deviceData, data)
     }
 
     fun sendDataOnOff(deviceData: DeviceData, jsonData: JSONObject) {
-        MainApplication.instance!!.sendMQTTMessgae(jsonData.toString(), deviceData.DeviceNo)
+        MainApplication.instance!!.sendMQTTMessgae(jsonData.toString(), deviceData.DeviceNo, this)
     }
 
 
-    fun doEnableDisableOnOffBtn(boolean: Boolean){
-
-        imgbtn_on_off.isClickable=boolean
-        imgbtn_on_off.isEnabled=boolean
-        if(boolean){
-            imgbtn_on_off.alpha=1.0f
-        }else{
-            imgbtn_on_off.alpha=0.5f
+    fun doEnableDisableOnOffBtn(boolean: Boolean) {
+        imgbtn_on_off.isClickable = boolean
+        imgbtn_on_off.isEnabled = boolean
+        if (boolean) {
+            imgbtn_on_off.alpha = 1.0f
+            menuItem_auto.setCheckable(false)
+        } else {
+            imgbtn_on_off.alpha = 0.5f
+            menuItem_auto.setCheckable(true)
         }
+
     }
 }

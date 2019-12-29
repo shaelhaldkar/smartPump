@@ -17,15 +17,20 @@ import com.iot.smartpump.activity.DeviceDetailsActivityNew
 import com.iot.smartpump.adapter.DeviceListRecyclerViewAdapter
 import com.iot.smartpump.model.DeviceData
 import com.iot.smartpump.utils.Constants
+import com.iot.smartpump.utils.MQTTRequestListnerListner
 import com.iot.smartpump.utils.RecyclerItemClickListener
 import com.iot.smartpump.webtask.WebMethods
 import com.trackingsystem.webServices.WebResponseListener
 import com.trackingsystem.webtask.ParseJson
-import kotlinx.android.synthetic.main.dia_devices_registration.*
 import kotlinx.android.synthetic.main.fragment_home.*
+import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.json.JSONObject
 
-class HomeFragment : BaseFragment(), WebResponseListener {
+class HomeFragment : BaseFragment(), WebResponseListener, MQTTRequestListnerListner {
+    override fun onMessageArrived(s: String?, mqttMessage: MqttMessage?) {
+
+    }
+
     override fun onResponseReceived(error: String?, response: String, tag: String?) {
         Log.i("tag : ", "" + tag)
         Log.i("response : ", response)
@@ -86,13 +91,13 @@ class HomeFragment : BaseFragment(), WebResponseListener {
                     var data = JSONObject()
 
                     var deviceStatus = 0
-                    if (deviceData.isOn == 0) {
+                    if (deviceData.state == 0) {
                         deviceStatus = 1
                     }
                     data.put(Constants.MQTT_METHOD_STATUS, deviceStatus)
 
-                    MainApplication.instance!!.sendMQTTMessgae(data.toString(), deviceData.DeviceNo)
-                    adapter.list.get(position).isOn = deviceStatus
+                    MainApplication.instance!!.sendMQTTMessgae(data.toString(), deviceData.DeviceNo, this@HomeFragment)
+                    adapter.list.get(position).state = deviceStatus
                     adapter.notifyDataSetChanged()
                 } else {
                     var intent = Intent(activity, DeviceDetailsActivityNew::class.java)

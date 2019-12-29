@@ -7,6 +7,7 @@
         android:title="@string/tag_on" />-->
 
     <item
+
         android:id="@+id/navigation_time"
         android:icon="@drawable/ic_timer"
         android:title="@string/nav_timer" />

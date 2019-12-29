@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_bg"
+    android:background="@android:color/white"
     android:orientation="vertical">
 
     <LinearLayout
@@ -16,6 +16,7 @@
         android:orientation="horizontal">
 
                 <TextView
+                    android:textStyle="normal"
             android:id="@+id/tv_owner_name"
             style="@style/tv_large_text"
             android:layout_width="0dp"
@@ -44,6 +45,7 @@
         android:background="@android:color/darker_gray" />
 
     <TextView
+        android:textStyle="normal"
         android:id="@+id/tv_all_device"
         style="@style/tv_large_text"
         android:layout_width="match_parent"

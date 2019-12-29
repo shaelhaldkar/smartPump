@@ -24,7 +24,7 @@
             android:id="@+id/img_device"
             android:layout_width="56dp"
             android:layout_height="56dp"
-            app:srcCompat="@drawable/ic_device" />
+            app:srcCompat="@drawable/ic_device_new" />
         <TextView
             android:visibility="gone"
             android:gravity="center"
@@ -34,9 +34,10 @@
             android:layout_height="wrap_content"
             android:layout_weight=".7"
             android:text="@string/all_device"
-            android:textColor="@android:color/black" />
+              />
     </LinearLayout>
         <LinearLayout
+            android:paddingLeft="5dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -49,8 +50,9 @@
             android:layout_margin="5dp"
             android:layout_weight=".7"
             android:text="@string/all_device"
-            android:textColor="@android:color/black" />
+              />
         <TextView
+            android:textSize="14sp"
             android:id="@+id/tv_device_no"
             style="@style/tv_medium_text"
             android:layout_width="match_parent"
@@ -58,7 +60,7 @@
             android:layout_margin="5dp"
             android:layout_weight=".7"
             android:text="@string/all_device"
-            android:textColor="@android:color/black" />
+              />
         </LinearLayout>
         <ImageView
             android:adjustViewBounds="true"

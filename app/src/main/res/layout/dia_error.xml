@@ -24,16 +24,16 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/ic_cloud_off" />
+                android:src="@drawable/ic_lock" />
 
             <TextView
                     android:id="@+id/alertTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:text="Device not connected"
+                    android:text="Error"
                     android:textColor="@color/white"
-                    android:textSize="20sp"/>
+                    android:textSize="30sp"/>
 
             <TextView
                 android:id="@+id/alertBody"

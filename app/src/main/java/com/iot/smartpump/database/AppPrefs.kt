@@ -22,7 +22,6 @@ class AppPrefs {
     private val KEY_USER_EMAIL = "email";
     private val KEY_USER_ADDRESS = "email";
     private val KEY_USER_ID= "id";
-    private val KEY_USER_NAME= "name";
 
 //    state_name:String,city_name:String,postcode:String
 
@@ -49,13 +48,12 @@ class AppPrefs {
 
 
     fun saveUserData(profileModel: ProfileModel){
-        editor.putString(KEY_USER_ID, profileModel.UserID).apply()
+        editor.putString(KEY_USER_ID, profileModel.ID).apply()
         editor.putString(KEY_USER_FIRST_NAME, profileModel.FirstName).apply()
         editor.putString(KEY_USER_LAST_NAME, profileModel.LastName).apply()
         editor.putString(KEY_USER_EMAIL, profileModel.Email).apply()
         editor.putString(KEY_USER_ADDRESS, profileModel.Address).apply()
         editor.putString(KEY_USER_MOBILE, profileModel.Mobile).apply()
-        editor.putString(NAME, profileModel.Name).apply()
         editor.putString(KEY_TOKEN, profileModel.passToken).apply()
 
 

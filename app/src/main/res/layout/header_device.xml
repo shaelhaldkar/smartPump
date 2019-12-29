@@ -28,10 +28,11 @@
             android:text="device name"
             android:textColor="@android:color/white" />
         <androidx.appcompat.widget.AppCompatImageView
+            android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
             android:id="@+id/img_edit"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             app:srcCompat="@drawable/ic_edit" />
     </LinearLayout>
 </LinearLayout>

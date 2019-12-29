@@ -9,10 +9,10 @@ class DeviceData() :Parcelable{
     var DeviceKey=""
     var DeviceName=""
     var DImage=""
-    var LLimit=""
-    var CkLimit=""
-    var ULimit=""
-    var isOn=0
+    var LLimit=0
+    var CkLimit=0
+    var ULimit=0
+    var state=0
 
     constructor(parcel: Parcel) : this() {
         ID = parcel.readString().toString()
@@ -20,10 +20,10 @@ class DeviceData() :Parcelable{
         DeviceKey = parcel.readString().toString()
         DeviceName = parcel.readString().toString()
         DImage = parcel.readString().toString()
-        LLimit = parcel.readString().toString()
-        CkLimit = parcel.readString().toString()
-        ULimit = parcel.readString().toString()
-        isOn = parcel.readInt()
+        LLimit = parcel.readInt()
+        CkLimit = parcel.readInt()
+        ULimit = parcel.readInt()
+        state = parcel.readInt()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -32,10 +32,10 @@ class DeviceData() :Parcelable{
         parcel.writeString(DeviceKey)
         parcel.writeString(DeviceName)
         parcel.writeString(DImage)
-        parcel.writeString(LLimit)
-        parcel.writeString(CkLimit)
-        parcel.writeString(ULimit)
-        parcel.writeInt(isOn)
+        parcel.writeInt(LLimit)
+        parcel.writeInt(CkLimit)
+        parcel.writeInt(ULimit)
+        parcel.writeInt(state)
     }
 
     override fun describeContents(): Int {
