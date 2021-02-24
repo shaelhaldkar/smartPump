@@ -87,6 +87,7 @@ open class BaseActivity : AppCompatActivity() {
 //        startActivity(intent)
 //    }
     public fun showToast(msg: String) {
+
         MainApplication.instance!!.showToast(msg)
     }
 //    public fun askPermission() {
